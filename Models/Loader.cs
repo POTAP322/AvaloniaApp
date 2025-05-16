@@ -1,16 +1,22 @@
+using System.Threading;
+
 namespace AvaloniaApp.Models;
 
 public interface ILoader
 {
+    int Id { get; }
+    string Status { get; }
+    int? EvacuatedCarId { get; }
+    bool HasWorked { get; }
     void Load(RacingCar car);
 }
 
 public class Loader : ILoader
 {
-    public int Id { get; set; }
-    public string Status { get; set; }
-    public int? EvacuatedCarId { get; set; }
-    public bool HasWorked { get; set; }
+    public int Id { get; }
+    public string Status { get; private set; }
+    public int? EvacuatedCarId { get; private set; }
+    public bool HasWorked { get; private set; }
 
     public Loader(int id)
     {
@@ -29,10 +35,12 @@ public class Loader : ILoader
         HasWorked = true;
         
         // Имитация времени эвакуации
-        System.Threading.Thread.Sleep(5000);
+        Thread.Sleep(5000);
         
         car.IsCrashed = false;
         car.Condition = "Эвакуирован";
         car.Status = "Снят с трассы";
+        
+        Status = "Закончил работу";
     }
 }

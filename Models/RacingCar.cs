@@ -18,6 +18,9 @@ public class RacingCar
     public event Action<RacingCar>? OnTireWornOut;
     public event Action<RacingCar>? OnCrash;
 
+    private readonly Random _random = new();
+    private bool _isRunning = true;
+
     public RacingCar(int id, string name, int speed)
     {
         Id = id;
@@ -33,17 +36,16 @@ public class RacingCar
 
     public void Drive()
     {
-        Random random = new Random();
-        while (!IsCrashed)
+        while (_isRunning)
         {
             Thread.Sleep(1000);
             
-            if (IsInPitStop) continue;
+            if (IsInPitStop || IsCrashed) continue;
             
             Distance += Speed;
             
             // Проверка на износ покрышек (5% вероятность)
-            if (random.Next(1, 101) <= 5 && !IsTireWornOut)
+            if (_random.Next(1, 101) <= 5 && !IsTireWornOut)
             {
                 IsTireWornOut = true;
                 Condition = "Стерлись покрышки";
@@ -53,7 +55,7 @@ public class RacingCar
             }
             
             // Проверка на аварию (2% вероятность)
-            if (random.Next(1, 101) <= 2 && !IsCrashed)
+            if (_random.Next(1, 101) <= 2)
             {
                 IsCrashed = true;
                 Condition = "Авария";
@@ -61,5 +63,10 @@ public class RacingCar
                 OnCrash?.Invoke(this);
             }
         }
+    }
+
+    public void Stop()
+    {
+        _isRunning = false;
     }
 }

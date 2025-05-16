@@ -1,29 +1,36 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        x:Class="AvaloniaApp.Views.MainWindow"
         xmlns:vm="clr-namespace:AvaloniaApp.ViewModels"
-        xmlns:views="clr-namespace:AvaloniaApp.Views"
-        xmlns:models="clr-namespace:AvaloniaApp.Models"
-        Title="Гонки" Width="800" Height="600"
-        x:DataType="vm:MainWindowViewModel">
-    <StackPanel>
-        <Button Content="Добавить болид" Command="{Binding AddNewCarCommand}"/>
+        x:Class="AvaloniaApp.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Title="Гонки" Width="800" Height="600">
+    <DockPanel LastChildFill="True" Margin="10">
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="10">
+            <Button Content="Добавить болид" Command="{Binding AddNewCarCommand}" Width="150"/>
+            <Button Content="Остановить все болиды" Command="{Binding StopAllCarsCommand}" Width="150"/>
+        </StackPanel>
 
-        <DataGrid ItemsSource="{Binding RacingCars}" AutoGenerateColumns="False" Height="200">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Номер болида" Binding="{Binding Id}"/>
-                <DataGridTextColumn Header="Пройденная дистанция" Binding="{Binding Distance}"/>
-                <DataGridTextColumn Header="Состояние" Binding="{Binding Condition}"/>
-                <DataGridTextColumn Header="Статус болида" Binding="{Binding Status}"/>
-            </DataGrid.Columns>
-        </DataGrid>
-
-        <DataGrid ItemsSource="{Binding Loaders}" AutoGenerateColumns="False" Height="200">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Номер погрузчика" Binding="{Binding Id}"/>
-                <DataGridTextColumn Header="Статус погрузчика" Binding="{Binding Status}"/>
-                <DataGridTextColumn Header="Номер машины" Binding="{Binding EvacuatedCarId}"/>
-            </DataGrid.Columns>
-        </DataGrid>
-    </StackPanel>
+        <TabControl>
+            <TabItem Header="Болиды">
+                <DataGrid ItemsSource="{Binding RacingCars}" AutoGenerateColumns="False">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Номер" Binding="{Binding Id}" Width="*"/>
+                        <DataGridTextColumn Header="Дистанция" Binding="{Binding Distance}" Width="*"/>
+                        <DataGridTextColumn Header="Состояние" Binding="{Binding Condition}" Width="*"/>
+                        <DataGridTextColumn Header="Статус" Binding="{Binding Status}" Width="*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+            
+            <TabItem Header="Погрузчики">
+                <DataGrid ItemsSource="{Binding Loaders}" AutoGenerateColumns="False">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Номер" Binding="{Binding Id}" Width="*"/>
+                        <DataGridTextColumn Header="Статус" Binding="{Binding Status}" Width="*"/>
+                        <DataGridTextColumn Header="Машина" Binding="{Binding EvacuatedCarId}" Width="*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+        </TabControl>
+    </DockPanel>
 </Window>
