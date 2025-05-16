@@ -29,18 +29,20 @@ public class Loader : ILoader
     public void Load(RacingCar car)
     {
         if (HasWorked) return;
-        
+
         Status = "Эвакуирует";
         EvacuatedCarId = car.Id;
         HasWorked = true;
-        
+
         // Имитация времени эвакуации
         Thread.Sleep(5000);
-        
+
         car.IsCrashed = false;
         car.Condition = "Эвакуирован";
         car.Status = "Снят с трассы";
-        
+        car.Stop();
+
         Status = "Закончил работу";
     }
+
 }

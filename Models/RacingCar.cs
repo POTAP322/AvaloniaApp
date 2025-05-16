@@ -39,11 +39,11 @@ public class RacingCar
         while (_isRunning)
         {
             Thread.Sleep(1000);
-            
+    
             if (IsInPitStop || IsCrashed) continue;
-            
+    
             Distance += Speed;
-            
+    
             // Проверка на износ покрышек (5% вероятность)
             if (_random.Next(1, 101) <= 5 && !IsTireWornOut)
             {
@@ -53,7 +53,7 @@ public class RacingCar
                 IsInPitStop = true;
                 OnTireWornOut?.Invoke(this);
             }
-            
+    
             // Проверка на аварию (2% вероятность)
             if (_random.Next(1, 101) <= 2)
             {
@@ -61,9 +61,11 @@ public class RacingCar
                 Condition = "Авария";
                 Status = "Ожидает эвакуации";
                 OnCrash?.Invoke(this);
+                _isRunning = false; // Останавливаем машину после аварии
             }
         }
     }
+
 
     public void Stop()
     {
