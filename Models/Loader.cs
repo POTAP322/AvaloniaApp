@@ -1,4 +1,5 @@
 using System.Threading;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace AvaloniaApp.Models;
 
@@ -11,12 +12,36 @@ public interface ILoader
     void Load(RacingCar car);
 }
 
-public class Loader : ILoader
+public class Loader : ObservableObject, ILoader
 {
-    public int Id { get; }
-    public string Status { get; private set; }
-    public int? EvacuatedCarId { get; private set; }
-    public bool HasWorked { get; private set; }
+    private int _id;
+    private string _status;
+    private int? _evacuatedCarId;
+    private bool _hasWorked;
+
+    public int Id
+    {
+        get => _id;
+        set => SetProperty(ref _id, value);
+    }
+
+    public string Status
+    {
+        get => _status;
+        set => SetProperty(ref _status, value);
+    }
+
+    public int? EvacuatedCarId
+    {
+        get => _evacuatedCarId;
+        set => SetProperty(ref _evacuatedCarId, value);
+    }
+
+    public bool HasWorked
+    {
+        get => _hasWorked;
+        set => SetProperty(ref _hasWorked, value);
+    }
 
     public Loader(int id)
     {
@@ -34,8 +59,8 @@ public class Loader : ILoader
         EvacuatedCarId = car.Id;
         HasWorked = true;
 
-        // Имитация времени эвакуации
-        Thread.Sleep(5000);
+        //имитация времени эвакуации
+        Thread.Sleep(9000);
 
         car.IsCrashed = false;
         car.Condition = "Эвакуирован";
@@ -44,5 +69,4 @@ public class Loader : ILoader
 
         Status = "Закончил работу";
     }
-
 }

@@ -5,7 +5,6 @@ using Avalonia.Threading;
 using AvaloniaApp.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using System.Threading;
 
 namespace AvaloniaApp.ViewModels;
 
@@ -23,19 +22,17 @@ public partial class MainWindowViewModel : ObservableObject
 
     public MainWindowViewModel()
     {
-        // Добавляем 3 погрузчика
         for (int i = 0; i < 3; i++)
         {
             Loaders.Add(new Loader(i + 1));
         }
 
-        // Добавляем 2 машины при запуске
         for (int i = 0; i < 2; i++)
         {
             AddNewCar();
         }
 
-        // Инициализация таймера для обновления данных
+        //инициализация таймера для обновления данных
         _updateTimer = new DispatcherTimer();
         _updateTimer.Interval = TimeSpan.FromSeconds(3);
         _updateTimer.Tick += (sender, e) => UpdateAllCars();
@@ -56,7 +53,7 @@ public partial class MainWindowViewModel : ObservableObject
         RacingCars.Add(racingCar);
         Task.Run(() => racingCar.Drive());
     }
-    
+
     [RelayCommand]
     private void AddNewLoader()
     {
@@ -64,17 +61,15 @@ public partial class MainWindowViewModel : ObservableObject
         Loaders.Add(new Loader(newLoaderId));
     }
 
-
     private void UpdateAllCars()
     {
         foreach (var car in RacingCars)
         {
-            // Пропускаем машины, которые уже эвакуированы или находятся в боксе
             if (car.IsCrashed || car.IsInPitStop || car.Condition == "Эвакуирован") continue;
 
             car.Distance += car.Speed;
 
-            // Проверка на износ покрышек (5% вероятность)
+            //проверка на износ покрышек
             if (new Random().Next(1, 101) <= 5 && !car.IsTireWornOut)
             {
                 car.IsTireWornOut = true;
@@ -84,7 +79,7 @@ public partial class MainWindowViewModel : ObservableObject
                 HandleTireWornOut(car);
             }
 
-            // Проверка на аварию (2% вероятность)
+            //проверка на аварию
             if (new Random().Next(1, 101) <= 2)
             {
                 car.IsCrashed = true;
@@ -94,7 +89,6 @@ public partial class MainWindowViewModel : ObservableObject
             }
         }
     }
-
 
     private async void HandleTireWornOut(RacingCar car)
     {

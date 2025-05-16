@@ -14,9 +14,7 @@
     <Folder Include="Models\" />
     <AvaloniaResource Include="Assets\**" />
 
-    <!-- Основные XAML файлы -->
     <Page Update="Views\MainWindow.xaml" Generator="MSBuild:Compile" />
-    <!-- <Page Update="Views\RacingCarView.xaml" Generator="MSBuild:Compile" /> -->
   </ItemGroup>
 
   <ItemGroup>

@@ -1,25 +1,80 @@
 using System;
 using System.Threading;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace AvaloniaApp.Models;
 
-public class RacingCar
+public class RacingCar : ObservableObject
 {
-    public int Id { get; set; }
-    public string Name { get; set; }
-    public int Distance { get; set; }
-    public string Status { get; set; }
-    public string Condition { get; set; }
-    public int Speed { get; set; }
-    public bool IsTireWornOut { get; set; }
-    public bool IsCrashed { get; set; }
-    public bool IsInPitStop { get; set; }
+    private int _id;
+    private string _name;
+    private int _distance;
+    private string _status;
+    private string _condition;
+    private int _speed;
+    private bool _isTireWornOut;
+    private bool _isCrashed;
+    private bool _isInPitStop;
+    private bool _isRunning = true;
+
+    public int Id
+    {
+        get => _id;
+        set => SetProperty(ref _id, value);
+    }
+
+    public string Name
+    {
+        get => _name;
+        set => SetProperty(ref _name, value);
+    }
+
+    public int Distance
+    {
+        get => _distance;
+        set => SetProperty(ref _distance, value);
+    }
+
+    public string Status
+    {
+        get => _status;
+        set => SetProperty(ref _status, value);
+    }
+
+    public string Condition
+    {
+        get => _condition;
+        set => SetProperty(ref _condition, value);
+    }
+
+    public int Speed
+    {
+        get => _speed;
+        set => SetProperty(ref _speed, value);
+    }
+
+    public bool IsTireWornOut
+    {
+        get => _isTireWornOut;
+        set => SetProperty(ref _isTireWornOut, value);
+    }
+
+    public bool IsCrashed
+    {
+        get => _isCrashed;
+        set => SetProperty(ref _isCrashed, value);
+    }
+
+    public bool IsInPitStop
+    {
+        get => _isInPitStop;
+        set => SetProperty(ref _isInPitStop, value);
+    }
 
     public event Action<RacingCar>? OnTireWornOut;
     public event Action<RacingCar>? OnCrash;
 
     private readonly Random _random = new();
-    private bool _isRunning = true;
 
     public RacingCar(int id, string name, int speed)
     {
@@ -38,13 +93,13 @@ public class RacingCar
     {
         while (_isRunning)
         {
-            Thread.Sleep(1000);
-    
+            Thread.Sleep(3000);
+
             if (IsInPitStop || IsCrashed) continue;
-    
+
             Distance += Speed;
-    
-            // Проверка на износ покрышек (5% вероятность)
+
+            //проверка на износ покрышек (5% вероятность)
             if (_random.Next(1, 101) <= 5 && !IsTireWornOut)
             {
                 IsTireWornOut = true;
@@ -53,19 +108,17 @@ public class RacingCar
                 IsInPitStop = true;
                 OnTireWornOut?.Invoke(this);
             }
-    
-            // Проверка на аварию (2% вероятность)
+
+            //проверка на аварию (2% вероятность)
             if (_random.Next(1, 101) <= 2)
             {
                 IsCrashed = true;
                 Condition = "Авария";
                 Status = "Ожидает эвакуации";
                 OnCrash?.Invoke(this);
-                _isRunning = false; // Останавливаем машину после аварии
             }
         }
     }
-
 
     public void Stop()
     {
