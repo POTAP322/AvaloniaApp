@@ -1,38 +1,64 @@
-namespace AvaloniaApp.Models;
 using System;
 using System.Threading;
 
+namespace AvaloniaApp.Models;
+
 public class RacingCar
 {
+    public int Id { get; set; }
     public string Name { get; set; }
+    public int Distance { get; set; }
+    public string Status { get; set; }
+    public string Condition { get; set; }
     public int Speed { get; set; }
     public bool IsTireWornOut { get; set; }
     public bool IsCrashed { get; set; }
+    public bool IsInPitStop { get; set; }
 
-    public event Action<string>? OnTireWornOut;
-    public event Action<string>? OnCrash;
+    public event Action<RacingCar>? OnTireWornOut;
+    public event Action<RacingCar>? OnCrash;
 
-    public RacingCar(string name, int speed)
+    public RacingCar(int id, string name, int speed)
     {
+        Id = id;
         Name = name;
         Speed = speed;
+        Distance = 0;
+        Status = "Едет по трассе";
+        Condition = "Нормальное";
+        IsTireWornOut = false;
+        IsCrashed = false;
+        IsInPitStop = false;
     }
 
     public void Drive()
     {
         Random random = new Random();
-        while (true)
+        while (!IsCrashed)
         {
             Thread.Sleep(1000);
-            if (random.Next(1, 100) < 5)
+            
+            if (IsInPitStop) continue;
+            
+            Distance += Speed;
+            
+            // Проверка на износ покрышек (5% вероятность)
+            if (random.Next(1, 101) <= 5 && !IsTireWornOut)
             {
                 IsTireWornOut = true;
-                OnTireWornOut?.Invoke(Name);
+                Condition = "Стерлись покрышки";
+                Status = "Заехал в бокс";
+                IsInPitStop = true;
+                OnTireWornOut?.Invoke(this);
             }
-            if (random.Next(1, 100) < 2)
+            
+            // Проверка на аварию (2% вероятность)
+            if (random.Next(1, 101) <= 2 && !IsCrashed)
             {
                 IsCrashed = true;
-                OnCrash?.Invoke(Name);
+                Condition = "Авария";
+                Status = "Ожидает эвакуации";
+                OnCrash?.Invoke(this);
             }
         }
     }

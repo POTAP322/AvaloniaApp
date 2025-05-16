@@ -9,25 +9,54 @@ namespace AvaloniaApp.ViewModels;
 
 public partial class MainWindowViewModel : ObservableObject
 {
-    public ObservableCollection<RacingCar> RacingCars { get; set; }
+    [ObservableProperty]
+    private ObservableCollection<RacingCar> _racingCars;
 
-    [RelayCommand]
-    private void AddRacingCar()
-    {
-        var racingCar = new RacingCar("Car" + (RacingCars.Count + 1), 100);
-        racingCar.OnTireWornOut += (name) => _mechanic.ChangeTires(racingCar);
-        racingCar.OnCrash += (name) => _loader.Load(racingCar);
-
-        RacingCars.Add(racingCar);
-        Thread thread = new Thread(racingCar.Drive);
-        thread.Start();
-    }
+    [ObservableProperty]
+    private ObservableCollection<Loader> _loaders;
 
     private Mechanic _mechanic = new Mechanic();
-    private ILoader _loader = new Loader();
 
     public MainWindowViewModel()
     {
         RacingCars = new ObservableCollection<RacingCar>();
+        Loaders = new ObservableCollection<Loader>();
+
+        // Добавим 3 погрузчика
+        for (int i = 0; i < 3; i++)
+        {
+            Loaders.Add(new Loader(i + 1));
+        }
+
+        // Добавим 2 машины при запуске
+        for (int i = 0; i < 2; i++)
+        {
+            AddNewCar();
+        }
+    }
+
+    [RelayCommand]
+    private void AddNewCar()
+    {
+        var racingCar = new RacingCar(RacingCars.Count + 1, $"Car{RacingCars.Count + 1}", new Random().Next(80, 120));
+        racingCar.OnTireWornOut += (car) => _mechanic.ChangeTires(car);
+        racingCar.OnCrash += HandleCrash;
+
+        RacingCars.Add(racingCar);
+        Thread thread = new Thread(racingCar.Drive);
+        thread.IsBackground = true;
+        thread.Start();
+    }
+
+    private void HandleCrash(RacingCar car)
+    {
+        foreach (var loader in Loaders)
+        {
+            if (loader.Status == "Ожидает" && !loader.HasWorked)
+            {
+                loader.Load(car);
+                break;
+            }
+        }
     }
 }

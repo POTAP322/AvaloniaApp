@@ -7,14 +7,23 @@
         Title="Гонки" Width="800" Height="600"
         x:DataType="vm:MainWindowViewModel">
     <StackPanel>
-        <Button Content="Добавить болид" Command="{Binding AddRacingCarCommand}"/>
+        <Button Content="Добавить болид" Command="{Binding AddNewCarCommand}"/>
 
-        <ItemsControl ItemsSource="{Binding RacingCars}">
-            <ItemsControl.ItemTemplate>
-                <DataTemplate x:DataType="models:RacingCar">
-                    <views:RacingCarView />
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
+        <DataGrid ItemsSource="{Binding RacingCars}" AutoGenerateColumns="False" Height="200">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Номер болида" Binding="{Binding Id}"/>
+                <DataGridTextColumn Header="Пройденная дистанция" Binding="{Binding Distance}"/>
+                <DataGridTextColumn Header="Состояние" Binding="{Binding Condition}"/>
+                <DataGridTextColumn Header="Статус болида" Binding="{Binding Status}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <DataGrid ItemsSource="{Binding Loaders}" AutoGenerateColumns="False" Height="200">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Номер погрузчика" Binding="{Binding Id}"/>
+                <DataGridTextColumn Header="Статус погрузчика" Binding="{Binding Status}"/>
+                <DataGridTextColumn Header="Номер машины" Binding="{Binding EvacuatedCarId}"/>
+            </DataGrid.Columns>
+        </DataGrid>
     </StackPanel>
 </Window>
